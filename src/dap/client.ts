@@ -69,7 +69,9 @@ export class DapClient {
 	private pending = new Map<number, PendingRequest>();
 	private listeners = new Map<string, Set<AnyHandler>>();
 	private isConnected = false;
-	private buffer = "";
+	// Bytes, not a string: Content-Length counts UTF-8 bytes, so a string buffer
+	// cuts a body short whenever it holds non-ASCII text (Swift symbol names do).
+	private buffer: Buffer = Buffer.alloc(0);
 	private logger: Logger<"dap"> | null;
 
 	constructor(
@@ -203,7 +205,7 @@ export class DapClient {
 	}
 
 	private handleIncomingData(chunk: string): void {
-		this.buffer += chunk;
+		this.buffer = Buffer.concat([this.buffer, Buffer.from(chunk, "utf-8")]);
 		this.processBuffer();
 	}
 
@@ -213,12 +215,12 @@ export class DapClient {
 			const headerEnd = this.buffer.indexOf("\r\n\r\n");
 			if (headerEnd === -1) return;
 
-			const header = this.buffer.slice(0, headerEnd);
+			const header = this.buffer.subarray(0, headerEnd).toString("utf-8");
 			const match = /Content-Length:\s*(\d+)/i.exec(header);
 			if (!match?.[1]) {
 				// Malformed header; skip past it and log so we know something's off.
 				this.logger?.warn("malformed_header", { header: header.slice(0, 120) });
-				this.buffer = this.buffer.slice(headerEnd + 4);
+				this.buffer = this.buffer.subarray(headerEnd + 4);
 				continue;
 			}
 
@@ -229,8 +231,8 @@ export class DapClient {
 			// Wait for complete body
 			if (this.buffer.length < bodyEnd) return;
 
-			const body = this.buffer.slice(bodyStart, bodyEnd);
-			this.buffer = this.buffer.slice(bodyEnd);
+			const body = this.buffer.subarray(bodyStart, bodyEnd).toString("utf-8");
+			this.buffer = this.buffer.subarray(bodyEnd);
 
 			this.handleMessage(body);
 		}

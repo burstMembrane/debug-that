@@ -120,8 +120,10 @@ export class TcpTransport implements DapTransport {
 
 	start(handlers: TransportHandlers): void {
 		this.handlers = handlers;
+		// A streaming decoder keeps a character split across two packets intact.
+		const decoder = new TextDecoder();
 		this.socket.on("data", (buf: Buffer) => {
-			this.handlers?.onData(buf.toString("utf-8"));
+			this.handlers?.onData(decoder.decode(buf, { stream: true }));
 		});
 		this.socket.on("close", () => this.markClosed());
 		this.socket.on("error", () => this.markClosed());
