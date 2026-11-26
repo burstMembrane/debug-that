@@ -65,6 +65,9 @@ export const MAX_SOURCE_LINE_WIDTH = 120;
 /** Time to wait for the DAP "initialized" event during launch/attach. */
 export const INITIALIZED_TIMEOUT_MS = 10_000;
 
+/** Attach can take longer: lldb-dap only reports "initialized" once it has loaded every image of a large app. */
+export const ATTACH_INITIALIZED_TIMEOUT_MS = 60_000;
+
 /** Max request payload size (bytes) accepted by the daemon IPC server. */
 export const MAX_REQUEST_SIZE = 1_048_576; // 1MB
 

@@ -1,6 +1,7 @@
 import { join } from "node:path";
 import type { DebugProtocol } from "@vscode/debugprotocol";
 import {
+	ATTACH_INITIALIZED_TIMEOUT_MS,
 	INITIALIZED_TIMEOUT_MS,
 	WAIT_MAYBE_PAUSE_TIMEOUT_MS,
 	WAIT_PAUSE_TIMEOUT_MS,
@@ -241,7 +242,10 @@ export class DapSession extends BaseSession {
 
 		// Arm the "initialized" waiter BEFORE sending "initialize": debugpy (and
 		// some other adapters) emit the event during the initialize round-trip.
-		const initialized = this.dap.waitForEvent("initialized", INITIALIZED_TIMEOUT_MS);
+		const initialized = this.dap.waitForEvent(
+			"initialized",
+			command === "attach" ? ATTACH_INITIALIZED_TIMEOUT_MS : INITIALIZED_TIMEOUT_MS,
+		);
 
 		const capabilities = await this.dap.send("initialize", {
 			adapterID: this._runtime,
