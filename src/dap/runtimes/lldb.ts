@@ -6,19 +6,20 @@ import type { DapConnectPlan, DapRuntimeConfig, UserLaunchInput } from "./types.
 
 /**
  * Where lldb-dap lives on this machine, in order of preference: the copy dbg
- * installed, one on PATH under its plain or versioned name, Homebrew's LLVM
- * kegs, the Apple developer tools selected with xcode-select, or a Linux
- * distribution's LLVM. Falls back to the bare name so the spawn error names
- * what is missing.
+ * installed, then on macOS the Apple developer tools selected with xcode-select
+ * (only Apple's build understands Swift types; Homebrew's LLVM shows Swift values
+ * as raw memory), then one on PATH under its plain or versioned name, Homebrew's
+ * LLVM kegs, or a Linux distribution's LLVM. Falls back to the bare name so the
+ * spawn error names what is missing.
  */
 export function findLldbDap(): string {
 	const managed = join(getManagedAdaptersDir(), "lldb-dap");
 	if (existsSync(managed)) return managed;
 	return (
+		appleDeveloperTool("lldb-dap") ??
 		Bun.which("lldb-dap") ??
 		newestExecutable(pathDirs(), /^lldb-dap-(\d+)$/) ??
 		newestExecutable(homebrewKegs(), /^llvm(?:@(\d+))?$/, "bin/lldb-dap") ??
-		appleDeveloperTool("lldb-dap") ??
 		newestExecutable(["/usr/lib"], /^llvm-(\d+)$/, "bin/lldb-dap") ??
 		"lldb-dap"
 	);
