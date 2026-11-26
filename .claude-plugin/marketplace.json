@@ -1,0 +1,15 @@
+{
+  "name": "debug-that",
+  "owner": {
+    "name": "Theodo Group"
+  },
+  "plugins": [
+    {
+      "name": "debug-that",
+      "source": "./",
+      "description": "Debugger for AI agents through the dbg CLI (Node.js, Bun, Python, Java, LLDB)",
+      "version": "0.12.0"
+    }
+  ],
+  "description": "The debug-that plugin: a debugger CLI and skill for AI agents"
+}

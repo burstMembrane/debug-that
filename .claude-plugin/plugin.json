@@ -1,0 +1,12 @@
+{
+  "name": "debug-that",
+  "version": "0.12.0",
+  "description": "Debugger for AI agents: breakpoints, stepping, variables and eval for Node.js, Bun, Python, Java and native code (C/C++/Rust/Swift via LLDB), through the dbg CLI.",
+  "author": { "name": "Theodo Group" },
+  "homepage": "https://github.com/theodo-group/debug-that",
+  "repository": "https://github.com/theodo-group/debug-that",
+  "license": "MIT",
+  "keywords": ["debugger", "lldb", "dap", "cdp", "swift", "nodejs", "bun", "python"],
+  "skills": ["./.claude/skills/debug-that"],
+  "hooks": "./hooks/hooks.json"
+}

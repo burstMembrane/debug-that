@@ -33,6 +33,15 @@ Requires [Bun](https://bun.sh).
 bun install --global debug-that
 ```
 
+Then add the skill. In Claude Code, install it as a plugin, which also checks at session start that `dbg` is installed:
+
+```
+/plugin marketplace add theodo-group/debug-that
+/plugin install debug-that@debug-that
+```
+
+For other agents:
+
 ```bash
 npx skills add theodo-group/debug-that
 ```
