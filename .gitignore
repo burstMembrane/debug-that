@@ -35,6 +35,7 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # C test fixture build artifacts
 tests/fixtures/c/hello
+tests/fixtures/c/loop
 tests/fixtures/c/*.dSYM
 
 # Java build artifacts

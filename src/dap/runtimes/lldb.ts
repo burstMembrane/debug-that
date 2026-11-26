@@ -79,7 +79,26 @@ export const lldbConfig: DapRuntimeConfig = {
 			requestArgs: { program, args, cwd },
 		};
 	},
+	/**
+	 * Attach to a running process by pid. Apps the system launches for you,
+	 * such as iOS apps on a Mac or in the Simulator, can only be debugged this way.
+	 */
+	attach(target: string): DapConnectPlan {
+		return {
+			connector: new SpawnAdapterConnector([findLldbDap()]),
+			requestArgs: { pid: parsePid(target) },
+		};
+	},
 };
+
+/** A pid from the attach target, rejecting anything that is not a positive integer */
+export function parsePid(target: string): number {
+	const pid = Number(target.trim());
+	if (!Number.isInteger(pid) || pid <= 0) {
+		throw new Error(`LLDB attach expects a process id, got "${target}". Find it with: pgrep -x <ProcessName>`);
+	}
+	return pid;
+}
 
 export const codelldbConfig: DapRuntimeConfig = {
 	launch({ program, args, cwd }: UserLaunchInput): DapConnectPlan {

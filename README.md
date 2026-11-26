@@ -87,6 +87,9 @@ dbg launch --brk bun app.ts
 # C/C++ (via LLDB)
 dbg launch --brk --runtime lldb ./my_program
 
+# Attach LLDB to a running process by pid (e.g. an iOS app on a Mac or in the Simulator)
+dbg attach "$(pgrep -x MyApp)" --runtime lldb
+
 # Attach to a running process (any runtime with --inspect)
 dbg attach 9229
 
